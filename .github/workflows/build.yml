@@ -78,8 +78,8 @@ jobs:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
         with:
           upload_url: ${{ steps.create-new-release.outputs.upload_url }}
-          asset_path: ./demo-app.zip
-          asset_name: demo-app-v${{ github.run_number }}.zip
+          asset_path: ./test-app.zip
+          asset_name: test-app-v${{ github.run_number }}.zip
           asset_content_type: application/zip
 
   delete-release:
@@ -90,6 +90,5 @@ jobs:
         with:
           repo: huynhlan21/test
           keep_latest: 2
-          # delete_tag_pattern: beta
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
