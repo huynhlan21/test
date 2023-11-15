@@ -1,0 +1,83 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Build and release Expo app
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the "main" branch
+  push:
+    branches: ["update_yml"]
+  pull_request:
+    branches: ["build"]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  update:
+    name: EAS Update
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 🚚 Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.x
+          cache: npm
+
+      - name: 🛠️ Setup Expo
+        uses: expo/expo-github-action@v8
+        with:
+          expo-version: latest
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: 📦 Install dependencies
+        run: npm install
+
+      - name: Build APK
+        run: eas build --profile preview --platform android --non-interactive --clear-cache
+
+      - name: GET APK URL from EXPO
+        run: eas build:list --json --non-interactive --limit=1 --platform=android | jq -r .[0].artifacts.buildUrl
+
+      - name: Store apk download URL in env variable
+        run: echo "apk_url=$(eas build:list --json --non-interactive --limit=1 --platform=android | jq -r .[0].artifacts.buildUrl)" >> $GITHUB_ENV
+
+      - name: Download apk file
+        uses: suisei-cn/actions-download-file@v1
+        id: downloadfile
+        with:
+          url: "Downloading APK from [this](${{ env.apk_url }})!"
+          target: public/
+          auto-match: true
+
+      - name: LIST DIR
+        run: ls -R
+
+      - uses: thedoctor0/zip-release@master
+        with:
+          path: public/
+          filename: test-app.zip
+
+      - name: Create Release
+        id: create-new-release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+        with:
+          tag_name: v${{ github.run_number }}
+          release_name: Release v${{ github.run_number }}
+
+      - name: Upload asset to Github release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+        with:
+          upload_url: ${{ steps.create-new-release.outputs.upload_url }}
+          asset_path: ./test-app.zip
+          asset_name: test-app-v${{ github.run_number }}.zip
+          asset_content_type: application/zip
