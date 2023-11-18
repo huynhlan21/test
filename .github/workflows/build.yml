@@ -50,6 +50,7 @@ jobs:
       - name: Download APK file
         run: |
           wget -O downloaded.apk ${{ env.apk_url }}
+          mkdir -p public
           mv downloaded.apk public/
 
       - name: LIST DIR
