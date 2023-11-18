@@ -74,16 +74,13 @@ jobs:
         run: |
           git tag v${{ github.run_number }}
           git push --tags
+          git release v${{ github.run_number }}
 
       - name: Get Release ID
         id: get-release-id
         run: |
           TAG_NAME="v${{ github.run_number }}"
           RELEASE_URL="https://api.github.com/repos/huynhlan21/test/releases/tags/$TAG_NAME"
-          while [[ "$(curl -sSL -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" -o /dev/null -w '%{http_code}' $RELEASE_URL)" != "200" ]]; do
-            echo "Waiting for release to be available..."
-            sleep 5
-          done
           RELEASE_ID=$(curl -sSL -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" $RELEASE_URL | jq -r '.id')
           echo "RELEASE_ID=$RELEASE_ID" >> $GITHUB_ENV
 
