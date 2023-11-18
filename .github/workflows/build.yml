@@ -75,7 +75,7 @@ jobs:
         id: get-release-id
         run: |
           RELEASE_ID=$(curl -sSL -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" "https://api.github.com/repos/huynhlan21/test/releases/tags/v${{ github.run_number }}" | jq -r '.id')
-          echo "::set-env name=RELEASE_ID::$RELEASE_ID"
+          echo "RELEASE_ID=$RELEASE_ID" >> $GITHUB_ENV
 
       - name: Upload asset to Github release
         env:
