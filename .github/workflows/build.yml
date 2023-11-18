@@ -69,8 +69,8 @@ jobs:
 
       - name: Configure Git Identity
         run: |
-          git config --global user.email "${{ env.USER_EMAIL }}"
-          git config --global user.name "${{ env.USER_NAME }}"
+          git config --global user.email "$USER_EMAIL"
+          git config --global user.name "$USER_NAME"
 
       - name: Create Release
         id: create-new-release
