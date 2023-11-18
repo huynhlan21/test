@@ -84,7 +84,7 @@ jobs:
       - name: Get Release ID
         id: get-release-id
         run: |
-          RELEASE_URL="${{ vars.RELEASE_PREFIX }}/tags/$TAG_NAME"
+          RELEASE_URL="${{ vars.RELEASE_PREFIX }}/tags/${{ vars.TAG_NAME }}"
           RELEASE_ID=$(curl -sSL -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" $RELEASE_URL | jq -r '.id')
           echo "RELEASE_ID=$RELEASE_ID" >> $GITHUB_ENV
 
