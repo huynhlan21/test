@@ -39,7 +39,7 @@ jobs:
         run: npm install
 
       - name: 🧪 Run unit tests
-        run: npm  && exit 0
+        run: npm test && exit
 
       # - name: Build APK
       #   run: eas build --profile preview --platform android --non-interactive --clear-cache
