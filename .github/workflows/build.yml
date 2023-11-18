@@ -81,6 +81,7 @@ jobs:
           RELEASE_NAME="Release v${{ github.run_number }}"
           git tag -a "$TAG_NAME" -m "$RELEASE_NAME"
           git push origin "$TAG_NAME"
+          gh release create  "$TAG_NAME"
 
       - name: Get Release ID
         id: get-release-id
