@@ -45,11 +45,11 @@ jobs:
         run: eas build:list --json --non-interactive --limit=1 --platform=android | jq -r .[0].artifacts.buildUrl
 
       - name: Store APK download URL in env variable
-        run: echo "apk_url=$(eas build:list --json --non-interactive --limit=1 --platform=android | jq -r .[0].artifacts.buildUrl)" >> $GITHUB_ENV
+        run: echo "APK_URL=$(eas build:list --json --non-interactive --limit=1 --platform=android | jq -r .[0].artifacts.buildUrl)" >> $GITHUB_ENV
 
       - name: Download APK file
         run: |
-          wget -O downloaded.apk ${{ env.apk_url }}
+          wget -O downloaded.apk ${{ env.APK_URL }}
           mkdir -p public
           mv downloaded.apk public/
 
@@ -80,5 +80,5 @@ jobs:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
           RELEASE_ID: ${{ env.RELEASE_ID }}
         run: |
-          UPLOAD_URL=$(curl -sSL -H "Authorization: token $GITHUB_TOKEN" "https://api.github.com/repos/huynhlan21/test/releases/${RELEASE_ID}" | jq -r '.upload_url' | sed 's/{?name,label}//')
+          UPLOAD_URL=$(curl -sSL -H "Authorization: token $GITHUB_TOKEN" "https://api.github.com/repos/huynhlan21/test/releases/$RELEASE_ID" | jq -r '.upload_url' | sed 's/{?name,label}//')
           curl -sSL -X POST -H "Authorization: token $GITHUB_TOKEN" -H "Content-Type: application/zip" --data-binary "@./test-app.zip" "$UPLOAD_URL?name=test-app-v${{ github.run_number }}.zip"
