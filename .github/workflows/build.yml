@@ -44,16 +44,13 @@ jobs:
       - name: GET APK URL from EXPO
         run: eas build:list --json --non-interactive --limit=1 --platform=android | jq -r .[0].artifacts.buildUrl
 
-      - name: Store apk download URL in env variable
+      - name: Store APK download URL in env variable
         run: echo "apk_url=$(eas build:list --json --non-interactive --limit=1 --platform=android | jq -r .[0].artifacts.buildUrl)" >> $GITHUB_ENV
 
-      - name: Download apk file
-        uses: suisei-cn/actions-download-file@v1
-        id: downloadfile
-        with:
-          url: "Downloading APK from [this](${{ env.apk_url }})!"
-          target: public/
-          auto-match: true
+      - name: Download APK file
+        run: |
+          git clone --depth=1 --branch=update_yml https://github.com/huynhlan21/test.git
+          mv test/path/to/apk_file.apk public/
 
       - name: LIST DIR
         run: ls -R
