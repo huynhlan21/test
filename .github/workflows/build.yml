@@ -44,6 +44,17 @@ jobs:
       - name: GET APK URL from EXPO
         run: eas build:list --json --non-interactive --limit=1 --platform=android | jq -r .[0].artifacts.buildUrl
 
+      - name: Store APK download URL in env variable
+        run: echo "apk_url=$(eas build:list --json --non-interactive --limit=1 --platform=android | jq -r .[0].artifacts.buildUrl)" >> $GITHUB_ENV
+
+      - name: Download APK file
+        run: |
+          wget -O downloaded.apk ${{ env.apk_url }}
+          mv downloaded.apk public/
+
+      - name: LIST DIR
+        run: ls -R
+
       - uses: thedoctor0/zip-release@master
         with:
           path: public/
