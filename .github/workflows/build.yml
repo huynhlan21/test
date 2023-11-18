@@ -19,24 +19,24 @@ jobs:
     name: EAS Update
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      # - name: Checkout repository
+      #   uses: actions/checkout@v4
 
-      - name: 🚚 Setup Node
-        uses: actions/setup-node@v3
-        with:
-          node-version: 16.x
-          cache: npm
+      # - name: 🚚 Setup Node
+      #   uses: actions/setup-node@v3
+      #   with:
+      #     node-version: 16.x
+      #     cache: npm
 
-      - name: 🛠️ Setup Expo
-        uses: expo/expo-github-action@v8
-        with:
-          expo-version: latest
-          eas-version: latest
-          token: ${{ secrets.EXPO_TOKEN }}
+      # - name: 🛠️ Setup Expo
+      #   uses: expo/expo-github-action@v8
+      #   with:
+      #     expo-version: latest
+      #     eas-version: latest
+      #     token: ${{ secrets.EXPO_TOKEN }}
 
-      - name: 📦 Install dependencies
-        run: npm install
+      # - name: 📦 Install dependencies
+      #   run: npm install
 
       # - name: Build APK
       #   run: eas build --profile preview --platform android --non-interactive --clear-cache
@@ -59,8 +59,8 @@ jobs:
           mkdir -p public
           mv downloaded.apk public/
 
-      - name: LIST DIR
-        run: ls -R
+      # - name: LIST DIR
+      #   run: ls -R
 
       - uses: thedoctor0/zip-release@master
         with:
@@ -75,19 +75,16 @@ jobs:
       - name: Create Release
         id: create-new-release
         env:
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          TAG_NAME="v${{ github.run_number }}"
-          RELEASE_NAME="Release v${{ github.run_number }}"
-          git tag -a "$TAG_NAME" -m "$RELEASE_NAME"
-          git push origin "$TAG_NAME"
-          gh release create  "$TAG_NAME"
+          git tag -a "${{ vars.TAG_NAME }}" -m "${{ vars.RELEASE_NAME }}"
+          git push origin "${{ vars.TAG_NAME }}"
+          gh release create "${{ vars.RELEASE_NAME }}"
 
       - name: Get Release ID
         id: get-release-id
         run: |
-          TAG_NAME="v${{ github.run_number }}"
-          RELEASE_URL="https://api.github.com/repos/huynhlan21/test/releases/tags/$TAG_NAME"
+          RELEASE_URL="${{ vars.RELEASE_PREFIX }}/tags/$TAG_NAME"
           RELEASE_ID=$(curl -sSL -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" $RELEASE_URL | jq -r '.id')
           echo "RELEASE_ID=$RELEASE_ID" >> $GITHUB_ENV
 
@@ -96,5 +93,5 @@ jobs:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
           RELEASE_ID: ${{ env.RELEASE_ID }}
         run: |
-          UPLOAD_URL=$(curl -sSL -H "Authorization: token $GITHUB_TOKEN" "https://api.github.com/repos/huynhlan21/test/releases/$RELEASE_ID" | jq -r '.upload_url' | sed 's/{?name,label}//')
+          UPLOAD_URL=$(curl -sSL -H "Authorization: token $GITHUB_TOKEN" "${{ vars.RELEASE_PREFIX }}/$RELEASE_ID" | jq -r '.upload_url' | sed 's/{?name,label}//')
           curl -sSL -X POST -H "Authorization: token $GITHUB_TOKEN" -H "Content-Type: application/zip" --data-binary "@./test-app.zip" "$UPLOAD_URL?name=test-app-v${{ github.run_number }}.zip"
