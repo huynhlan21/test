@@ -79,7 +79,7 @@ jobs:
         run: |
           git tag -a "${{ vars.TAG_NAME }}" -m "${{ vars.RELEASE_NAME }}"
           git push origin "${{ vars.TAG_NAME }}"
-          gh release create "${{ vars.RELEASE_NAME }}"
+          gh release create "${{ vars.TAG_NAME }}"
 
       - name: Get Release ID
         id: get-release-id
