@@ -50,7 +50,7 @@ jobs:
       - name: Download APK file
         run: |
           git clone --depth=1 --branch=update_yml https://github.com/huynhlan21/test.git
-          mv test/path/to/apk_file.apk public/
+          mv ${{ env.apk_url }} public/
 
       - name: LIST DIR
         run: ls -R
