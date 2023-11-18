@@ -38,18 +38,24 @@ jobs:
       - name: 📦 Install dependencies
         run: npm install
 
-      - name: Build APK
-        run: eas build --profile preview --platform android --non-interactive --clear-cache
+      # - name: Build APK
+      #   run: eas build --profile preview --platform android --non-interactive --clear-cache
 
-      - name: GET APK URL from EXPO
-        run: eas build:list --json --non-interactive --limit=1 --platform=android | jq -r .[0].artifacts.buildUrl
+      # - name: GET APK URL from EXPO
+      #   run: eas build:list --json --non-interactive --limit=1 --platform=android | jq -r .[0].artifacts.buildUrl
 
-      - name: Store APK download URL in env variable
-        run: echo "APK_URL=$(eas build:list --json --non-interactive --limit=1 --platform=android | jq -r .[0].artifacts.buildUrl)" >> $GITHUB_ENV
+      # - name: Store APK download URL in env variable
+      #   run: echo "APK_URL=$(eas build:list --json --non-interactive --limit=1 --platform=android | jq -r .[0].artifacts.buildUrl)" >> $GITHUB_ENV
+
+      # - name: Download APK file
+      #   run: |
+      #     wget -O downloaded.apk ${{ env.APK_URL }}
+      #     mkdir -p public
+      #     mv downloaded.apk public/
 
       - name: Download APK file
         run: |
-          wget -O downloaded.apk ${{ env.APK_URL }}
+          wget -O downloaded.apk https://expo.dev/artifacts/eas/jhDba2fHiueUkaChYeSu2s.apk
           mkdir -p public
           mv downloaded.apk public/
 
