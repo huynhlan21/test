@@ -38,6 +38,9 @@ jobs:
       - name: 📦 Install dependencies
         run: npm install
 
+      - name: 🧪 Run unit tests
+        run: npm test
+
       # - name: Build APK
       #   run: eas build --profile preview --platform android --non-interactive --clear-cache
 
