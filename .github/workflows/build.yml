@@ -71,10 +71,16 @@ jobs:
           git tag v${{ github.run_number }}
           git push --tags
 
+      - name: Get Release ID
+        id: get-release-id
+        run: |
+          RELEASE_ID=$(curl -sSL -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" "https://api.github.com/repos/huynhlan21/test/releases/tags/v${{ github.run_number }}" | jq -r '.id')
+          echo "::set-env name=RELEASE_ID::$RELEASE_ID"
+
       - name: Upload asset to Github release
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          RELEASE_ID: ${{ env.RELEASE_ID }}
         run: |
-          RELEASE_ID=$(curl -sSL -H "Authorization: token $GITHUB_TOKEN" "https://api.github.com/repos/huynhlan21/test/releases/tags/v${{ github.run_number }}" "https://api.github.com/repos"| jq -r '.id')          
           UPLOAD_URL=$(curl -sSL -H "Authorization: token $GITHUB_TOKEN" "https://api.github.com/repos/huynhlan21/test/releases/${{ RELEASE_ID }}" | jq -r '.upload_url' | sed 's/{?name,label}//')
           curl -sSL -X POST -H "Authorization: token $GITHUB_TOKEN" -H "Content-Type: application/zip" --data-binary "@./test-app.zip" "$UPLOAD_URL?name=test-app-v${{ github.run_number }}.zip"
