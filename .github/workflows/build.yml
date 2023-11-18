@@ -77,6 +77,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          git push origin :refs/tags/v1.0.0
           git tag -a "${{ vars.TAG_NAME }}" -m "${{ vars.RELEASE_NAME }}"
           git push origin "${{ vars.TAG_NAME }}"
           gh release create "${{ vars.TAG_NAME }}"
