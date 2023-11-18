@@ -75,6 +75,5 @@ jobs:
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
         run: |
-          RELEASE_URL=$(curl -sSL -H "Authorization: token $GITHUB_TOKEN" "${{ steps.create-new-release.outputs.url }}" | jq -r '.upload_url')
-          UPLOAD_URL="${RELEASE_URL%\{*}"
+          UPLOAD_URL= ${{ steps.create-new-release.outputs.upload_url }}
           curl -sSL -X POST -H "Authorization: token $GITHUB_TOKEN" -H "Content-Type: application/zip" --data-binary "@./test-app.zip" "$UPLOAD_URL?name=test-app-v${{ github.run_number }}.zip"
