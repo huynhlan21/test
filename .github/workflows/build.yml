@@ -80,7 +80,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          if git rev-parse --quiet --verify "refs/tags/${{ vars.TAG_NAME }}" >/dev/null; then
+          if git show-ref --tags --quiet --verify "refs/tags/${{ vars.TAG_NAME }}" >/dev/null; then
             echo "Tag ${{ vars.TAG_NAME }} exists."
             git push origin :refs/tags/${{ vars.TAG_NAME }}
             gh release delete "${{ vars.TAG_NAME }}"
