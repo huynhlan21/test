@@ -75,6 +75,15 @@ jobs:
           git config --global user.email "${{ vars.USER_EMAIL }}"
           git config --global user.name "${{ vars.USER_NAME }}"
 
+      - name: Check if tag exists
+        run: |
+          if git rev-parse --quiet --verify "refs/tags/${{ vars.TAG_NAME }}" >/dev/null; then
+            echo "Tag ${{ vars.TAG_NAME }} exists."
+            gh release delete "${{ vars.TAG_NAME }}"
+          else
+            echo "Tag ${{ vars.TAG_NAME }} does not exist."
+          fi
+
       - name: Create Release
         id: create-new-release
         env:
@@ -83,7 +92,6 @@ jobs:
           git push origin :refs/tags/v1.0.0
           git tag -a "${{ vars.TAG_NAME }}" -m "${{ vars.RELEASE_NAME }}"
           git push origin "${{ vars.TAG_NAME }}"
-          gh release delete "${{ vars.TAG_NAME }}"
           gh release create "${{ vars.TAG_NAME }}"
 
       - name: Get Release ID
