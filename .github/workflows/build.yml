@@ -15,8 +15,8 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  update:
-    name: EAS Update
+  build:
+    name: Installation and build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -28,7 +28,7 @@ jobs:
           node-version: 16.x
           cache: npm
 
-      - name: 🛠️ Setup Expo
+      - name: 🛠️ Setup Expo and EAS
         uses: expo/expo-github-action@v8
         with:
           expo-version: latest
@@ -37,9 +37,6 @@ jobs:
 
       - name: 📦 Install dependencies
         run: npm install
-
-      - name: 🧪 Run unit tests
-        run: npm test && exit
 
       # - name: Build APK
       #   run: eas build --profile preview --platform android --non-interactive --clear-cache
@@ -56,6 +53,17 @@ jobs:
       #     mkdir -p public
       #     mv downloaded.apk public/
 
+  test:
+    name: Unit tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🧪 Run unit tests
+        run: npm test
+
+  deploy:
+    name: Unit test
+    runs-on: ubuntu-latest
+    steps:
       - name: Download APK file
         run: |
           wget -O downloaded.apk https://expo.dev/artifacts/eas/jhDba2fHiueUkaChYeSu2s.apk
