@@ -80,7 +80,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          git push origin :refs/tags/v1.0.0
+          git push origin :refs/tags/${{ vars.TAG_NAME }}
           git tag -a "${{ vars.TAG_NAME }}" -m "${{ vars.RELEASE_NAME }}"
           git push origin "${{ vars.TAG_NAME }}"
           if git rev-parse --quiet --verify "refs/tags/${{ vars.TAG_NAME }}" >/dev/null; then
