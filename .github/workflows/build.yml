@@ -84,7 +84,7 @@ jobs:
         run: |
           if git rev-parse --quiet --verify "refs/tags/${{ vars.TAG_NAME }}" >/dev/null; then
             echo "Tag ${{ vars.TAG_NAME }} exists."
-            git push origin :refs/tags/${{ vars.TAG_NAME }}
+            git push origin ":refs/tags/${{ vars.TAG_NAME }}"
             gh release delete "${{ vars.TAG_NAME }}"
           else
             echo "Tag ${{ vars.TAG_NAME }} does not exist."
